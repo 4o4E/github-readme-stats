@@ -16,11 +16,14 @@ const fetchWakatimeStats = async ({ username, api_domain, range }) => {
         api_domain ? api_domain.replace(/\/$/gi, "") : "wakatime.com"
       }/api/v1/users/${username}/stats/${
         range || "all_time"
-      }?is_including_today=true`,
+      }?is_including_today=true${
+        process.env["WAKA_TOKEN"] ? `&api_key=${process.env["WAKA_TOKEN"]}` : ""
+      }`,
     );
 
     return data.data;
   } catch (err) {
+    console.log(err);
     if (err.response.status < 200 || err.response.status > 299) {
       throw new Error(
         "Wakatime user not found, make sure you have a wakatime profile",
